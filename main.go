@@ -15,7 +15,7 @@ type User struct {
 	Avatar    string `json:"avatar"`
 }
 
-type Response struct {
+type ResponseDto struct {
 	Page       int    `json:"page"`
 	PerPage    int    `json:"per_page"`
 	Total      int    `json:"total"`
@@ -28,7 +28,7 @@ func main() {
 }
 
 func httpGet() {
-	var response Response
+	var response ResponseDto
 	fmt.Println("Hello, World")
 	resp, err := http.Get("https://reqres.in/api/users")
 	if err != nil {
@@ -48,7 +48,7 @@ func httpGet() {
 }
 
 func httpNewRequest() {
-	var response Response
+	var response ResponseDto
 	req, err := http.NewRequest("GET", "https://reqres.in/api/users", nil)
 	if err != nil {
 		panic(err)
@@ -70,5 +70,14 @@ func httpNewRequest() {
 			panic(err)
 		}
 	}
-	fmt.Println(response)
+	fmt.Println()
+
+	for _, user := range response.Data {
+		fmt.Println("Id", user.ID)
+		fmt.Println("Email", user.Email)
+		fmt.Println("FirstName", user.FirstName)
+		fmt.Println("LastName", user.LastName)
+		fmt.Println("Avatar", user.Avatar)
+		fmt.Println()
+	}
 }
