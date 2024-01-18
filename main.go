@@ -75,10 +75,8 @@ func httpNewRequestPut() {
 		panic(err)
 	}
 	bodyBytes, err := io.ReadAll(resp.Body)
-	if resp.StatusCode == http.StatusOK {
-		if err != nil {
-			panic(err)
-		}
+	if err != nil {
+		panic(err)
 	}
 	fmt.Println(resp.StatusCode)
 	fmt.Println(string(bodyBytes))
@@ -96,10 +94,8 @@ func httpNewRequestDelete() {
 		panic(err)
 	}
 	bodyBytes, err := io.ReadAll(resp.Body)
-	if resp.StatusCode == http.StatusOK {
-		if err != nil {
-			panic(err)
-		}
+	if err != nil {
+		panic(err)
 	}
 	fmt.Println(resp.StatusCode)
 	fmt.Println(string(bodyBytes))
