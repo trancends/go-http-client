@@ -33,7 +33,14 @@ type NewUser struct {
 var baseURL = "https://reqres.in/api"
 
 func main() {
+	fmt.Println("Post: ")
 	httpNewRequestPost()
+	fmt.Println()
+	fmt.Println("Delete: ")
+	httpNewRequestDelete()
+	fmt.Println()
+	fmt.Println("Put: ")
+	httpNewRequestPut()
 }
 
 func httpGet() {
@@ -56,23 +63,68 @@ func httpGet() {
 	fmt.Println(response)
 }
 
+func httpNewRequestPut() {
+	req, err := http.NewRequest("PUT", "https://reqres.in/api/users/1", nil)
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	client := http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if resp.StatusCode == http.StatusOK {
+		if err != nil {
+			panic(err)
+		}
+	}
+	fmt.Println(resp.StatusCode)
+	fmt.Println(string(bodyBytes))
+}
+
+func httpNewRequestDelete() {
+	req, err := http.NewRequest("DELETE", "https://reqres.in/api/users/1", nil)
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	client := http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if resp.StatusCode == http.StatusOK {
+		if err != nil {
+			panic(err)
+		}
+	}
+	fmt.Println(resp.StatusCode)
+	fmt.Println(string(bodyBytes))
+}
+
 func httpNewRequestPost() {
 	// param := url.Values{}
 	// param.Set("username", "beni")
 	// param.Set("email", "beni@mail.com")
 	// param.Set("password", "1234")
 	// payload := bytes.NewBufferString(param.Encode())
-	jsonStr := []byte(`{"username":"beni","email":"beni@mail.com","password":"1234"}`)
+	// jsonStr := []byte(`{"username":"beni","email":"beni@mail.com","password":"1234"}`)
+	//
+	// payload := bytes.NewBuffer(jsonStr)
+	values := map[string]string{"username": "beni", "email": "beni@mail.com", "password": "1234"}
 
-	payload := bytes.NewBuffer(jsonStr)
-	req, err := http.NewRequest("POST", baseURL+"/register", payload)
-	if err != nil {
-		panic(err)
-	}
-	req.Header.Set("Content-Type", "application/json")
+	jsonValue, _ := json.Marshal(values)
+	// req, err := http.NewRequest("POST", baseURL+"/register", jsonValue)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// req.Header.Set("Content-Type", "application/json")
 	// req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	client := http.Client{}
-	resp, err := client.Do(req)
+	// client := http.Client{}
+	resp, err := http.Post(baseURL+"/register", "application/json", bytes.NewBuffer(jsonValue))
 	if err != nil {
 		panic(err)
 	}
