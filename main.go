@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -23,8 +24,16 @@ type ResponseDto struct {
 	Data       []User `json:"data"`
 }
 
+type NewUser struct {
+	Username string `json:"username"`
+	Email    string `json:"password"`
+	Password string `json:"password"`
+}
+
+var baseURL = "https://reqres.in/api"
+
 func main() {
-	httpNewRequest()
+	httpNewRequestPost()
 }
 
 func httpGet() {
@@ -45,6 +54,34 @@ func httpGet() {
 		}
 	}
 	fmt.Println(response)
+}
+
+func httpNewRequestPost() {
+	// param := url.Values{}
+	// param.Set("username", "beni")
+	// param.Set("email", "beni@mail.com")
+	// param.Set("password", "1234")
+	// payload := bytes.NewBufferString(param.Encode())
+	jsonStr := []byte(`{"username":"beni","email":"beni@mail.com","password":"1234"}`)
+
+	payload := bytes.NewBuffer(jsonStr)
+	req, err := http.NewRequest("POST", baseURL+"/register", payload)
+	if err != nil {
+		panic(err)
+	}
+	req.Header.Set("Content-Type", "application/json")
+	// req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	client := http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	bodyByte, err := io.ReadAll(resp.Body)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println(string(bodyByte))
+	fmt.Println(resp.StatusCode)
 }
 
 func httpNewRequest() {
@@ -70,6 +107,11 @@ func httpNewRequest() {
 			panic(err)
 		}
 	}
+	fmt.Println("Paging:")
+	fmt.Println("Page:", response.Page)
+	fmt.Println("PerPage:", response.PerPage)
+	fmt.Println("Total:", response.Total)
+	fmt.Println("TotalPages:", response.TotalPages)
 	fmt.Println()
 
 	for _, user := range response.Data {
